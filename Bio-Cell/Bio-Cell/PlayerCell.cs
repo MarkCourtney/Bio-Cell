@@ -14,6 +14,8 @@ namespace Bio_Cell
 {
     public class PlayerCell : Player    // PlayerCell extends Player class
     {
+        DeathMarker deathMarker;
+
         public override void LoadContent()
         {
             base.LoadContent();
@@ -73,9 +75,12 @@ namespace Bio_Cell
         }
 
 
-        public override void DisplayDeathPoint()     // Display the vector where the player dies
+        public override void DisplayDeathPoint()        // Display the vector where the player dies
         {
-            deathPos = center;     // Get the position of the player upon death
+            deathPos = center;                          // Get the position of the player upon death
+            deathMarker = new DeathMarker(deathPos);    // Create new instance of DeathMarker type, set position to death location
+            deathMarker.LoadContent();                  // Load content of the DeathMarker
+            Game1.Instance.children.Add(deathMarker);   // Add DeathMarker to the list of entities
         }
 
         public override void IncreaseAcceleration(float timeDelta)      // Increases the acceleration of the player
