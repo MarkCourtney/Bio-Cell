@@ -17,14 +17,15 @@ namespace Bio_Cell
     /// </summary>
     public class Entity
     {
-        public Vector2 center, look, pos, target;           // Vector positions for center of a sprite, looking direction, current position, target position
-        public float rotation, radius, speed, acceleration; // Floats for rotation, radius of sprite, speed and acceleration of entities, 
-        public int bgX, bgY;                                // Integers forlength background X and Y axis
-        public Texture2D sprite;                            // Texture2D used in loading an image
-        public Vector2 basis = new Vector2(0, -1);          // Vector based on calculating rotation
-        public bool Alive;                                  // Boolean for current state of entity
-        public BoundingSphere sphere;                       // BoundingSphere used in collision detection
-        public Random random;                               // Random class used to create a random value 
+        public Vector2 center, look, pos, target;                                       // Vector positions for center of a sprite, looking direction, current position, target position
+        public float rotation, radius, speed;                                           // Floats for rotation, radius of sprite, speed and acceleration of entities
+        public float normalAcceleration, normalMaxAcceleration, boostedMaxAcceleration; // Floats for normal acceleration and maximum acceleration values
+        public int bgX, bgY;                                                            // Integers forlength background X and Y axis
+        public Texture2D sprite;                                                        // Texture2D used in loading an image
+        public Vector2 basis = new Vector2(0, -1);                                      // Vector based on calculating rotation
+        public bool Alive;                                                              // Boolean for current state of entity
+        public BoundingSphere sphere;                                                   // BoundingSphere used in collision detection
+        public Random random;                                                           // Random class used to create a random value 
 
 
         // Create virtual functions for Initialize, LoadContent, UnloadContent, Update, Draw

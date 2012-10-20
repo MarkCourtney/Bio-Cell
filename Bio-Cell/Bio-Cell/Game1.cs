@@ -18,6 +18,8 @@ namespace Bio_Cell
         GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
 
+        PlayerCell playerCell;
+
         public List<Entity> children = new List<Entity>();  // List of entities that will be loaded into the world 
        
         public Game1()
@@ -38,46 +40,52 @@ namespace Bio_Cell
         /// </summary>
         protected override void Initialize()
         {
+            playerCell = new PlayerCell();
+
+            children.Add(playerCell);       // Add the player to the List of children
+
             base.Initialize();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
+
+        // LoadContent of all the entities in the List of children
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                children[i].LoadContent();
+            }
         }
 
 
-
-
+        // Draw all the entities in the List of children
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
-            base.Update(gameTime);
+            for (int i = 0; i < children.Count; i++)
+            {
+                children[i].Update(gameTime);
+                if (!children[i].Alive)
+                {
+                    children.Remove(children[i]);       // Remove children from the list if Alive = false
+                }
+            }
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
+        // Draw all the entities in the List of children
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.White);
 
-            // TODO: Add your drawing code here
-
-
             spriteBatch.Begin();
-
+            for (int i = 0; i < children.Count; i++)
+            {
+                children[i].Draw(gameTime);
+            }
             spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
 }
