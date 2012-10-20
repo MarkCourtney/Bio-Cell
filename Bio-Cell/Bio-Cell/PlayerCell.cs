@@ -20,7 +20,7 @@ namespace Bio_Cell
         {
             base.LoadContent();
 
-            sprite = Game1.Instance.Content.Load<Texture2D>("Cell");    // Load the image into the sprite
+            sprite = Game1.Instance.Content.Load<Texture2D>("Cell");    // Load the Cell image into the sprite
             pos = new Vector2(100, 100);                                // Set position of the player
             radius = sprite.Width / 2;                                  // Radius equal to half the sprite width, used in collision detection
             normalAcceleration = 0;                                     // Normal acceleration is 0
@@ -29,6 +29,7 @@ namespace Bio_Cell
             health = 3;                                                 // Player has 3 lives
             Alive = true;                                               // Bool to determine whether the player is alive or dead
             random = new Random();                                      // Random class used in spawning to new location after death
+            //camera = new Camera(center);
         }
 
 
@@ -64,6 +65,11 @@ namespace Bio_Cell
             if (normalAcceleration > 0)     // If the normalAcceleration is greater than 0
             {
                 normalAcceleration -= 2f;   // Decrease till normalAcceleration is 0
+            }
+
+            if (normalAcceleration < 0)     // normalAcceleration can occur as it's decreased
+            {
+                normalAcceleration = 0;
             }
 
             pos += look * (speed += normalAcceleration) * timeDelta;
@@ -134,6 +140,7 @@ namespace Bio_Cell
 
         public override void Update(GameTime gameTime)
         {
+
             if (Alive == false)         // Check if the player is dead
             {
                 DisplayDeathPoint();    // Will be used to display the death position of the player

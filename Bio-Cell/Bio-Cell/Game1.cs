@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -19,6 +20,17 @@ namespace Bio_Cell
         public SpriteBatch spriteBatch;
 
         PlayerCell playerCell;
+        EnemyVirus enemyVirus;
+        Camera camera;
+        Stopwatch stopwatch;
+        GamePadState gamePad;
+        
+
+        public PlayerCell PlayerCell
+        {
+            get { return playerCell; }
+            set { playerCell = value; }
+        }
 
         public List<Entity> children = new List<Entity>();  // List of entities that will be loaded into the world 
        
@@ -40,9 +52,13 @@ namespace Bio_Cell
         /// </summary>
         protected override void Initialize()
         {
+            stopwatch = new Stopwatch();
             playerCell = new PlayerCell();
+            enemyVirus = new EnemyVirus();
 
-            children.Add(playerCell);       // Add the player to the List of children
+            children.Add(playerCell);       // Add the player to the List
+            children.Add(enemyVirus);       // Add enemyVirus to the List
+
 
             base.Initialize();
         }
@@ -64,6 +80,18 @@ namespace Bio_Cell
         // Draw all the entities in the List of children
         protected override void Update(GameTime gameTime)
         {
+            KeyboardState keyState = Keyboard.GetState();
+
+            gamePad = GamePad.GetState(PlayerIndex.One);
+
+            
+            if (keyState.IsKeyDown(Keys.U) || gamePad.Buttons.Y == ButtonState.Pressed)
+            {
+                stopwatch.Start();
+            }
+
+            camera = new Camera(playerCell.center, stopwatch);
+
             for (int i = 0; i < children.Count; i++)
             {
                 children[i].Update(gameTime);
@@ -80,7 +108,7 @@ namespace Bio_Cell
         {
             GraphicsDevice.Clear(Color.White);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, null, null, null, null, camera.TransformMatrix);
             for (int i = 0; i < children.Count; i++)
             {
                 children[i].Draw(gameTime);
