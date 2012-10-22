@@ -16,7 +16,9 @@ namespace Bio_Cell
     {
         public float distance;              // Calculate distance between player and collectable
         public float comboRadius;           // Combines the radius of the player and collectable
+        public Vector2 basis = new Vector2(0, -1);  // Used in calculating where the player is located
 
-        public void TrackPlayer() { }       // Track the player position in relation to the collectable
+
+        public virtual void TrackPlayer() { }       // Track the player position in relation to the collectable
     }
 }

@@ -19,8 +19,9 @@ namespace Bio_Cell
         GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
 
-        PlayerCell playerCell;
+        public PlayerCell playerCell;
         EnemyVirus enemyVirus;
+        CollectableGlucose collectableGlucose;
         Camera camera;
         Stopwatch stopwatch;
         GamePadState gamePad;
@@ -55,10 +56,11 @@ namespace Bio_Cell
             stopwatch = new Stopwatch();
             playerCell = new PlayerCell();
             enemyVirus = new EnemyVirus();
+            collectableGlucose = new CollectableGlucose();
 
             children.Add(playerCell);       // Add the player to the List
             children.Add(enemyVirus);       // Add enemyVirus to the List
-
+            children.Add(collectableGlucose);
 
             base.Initialize();
         }

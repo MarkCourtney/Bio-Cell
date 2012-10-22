@@ -35,7 +35,6 @@ namespace Bio_Cell
 
         public override void BoostSpeed()                           // Additional boost in speed for limited time
         {
-            Console.WriteLine(normalAcceleration);
             if (keyState.IsKeyDown(Keys.Space) || gamePadState.Buttons.RightShoulder == ButtonState.Pressed)                     // When space is pressed, normal acceleration can reach 200
             {
                 normalAcceleration += 1;                            // Continualy increase normalAcceleration by 1
@@ -62,7 +61,6 @@ namespace Bio_Cell
         public override void DecreaseAcceleration(float timeDelta)          // Decrease the acceleration of the player to 0   
         {                                                                   // Slows the player till they stop - speed = 0    
             speed = 0;
-            Console.WriteLine(normalAcceleration);
 
             if (normalAcceleration > 0)     // If the normalAcceleration is greater than 0
             {
@@ -96,7 +94,7 @@ namespace Bio_Cell
             speed = 100;
             normalAcceleration += 1;                        // Continualy increase normalAcceleration by 1
 
-            if (normalAcceleration > normalMaxAcceleration) // If the normalAcceleration is greater than normalMaxAcceleration
+            if (normalAcceleration >= normalMaxAcceleration) // If the normalAcceleration is greater than normalMaxAcceleration
             {
                 BoostSpeed();                               // Then call the BoostSpeed() method
             }
@@ -126,6 +124,8 @@ namespace Bio_Cell
             {
                 rotation += (5 * timeDelta);        // Rotate the player right
             }
+
+            oldLook = look;                         
         }
 
 
@@ -135,20 +135,17 @@ namespace Bio_Cell
             look.Y = -gamePadState.ThumbSticks.Left.Y;     // Determine the look on the Y axis using Right ThumbStick
                                                            // Left Stick uses inverse of XNA Y axis. This is why the values are minus
                                                         
-            
             if (!gamePadState.ThumbSticks.Left.Equals(new Vector2(0, 0)))
             {
                 IncreaseAcceleration(timeDelta);
 
                 if (gamePadState.ThumbSticks.Left.X < 0.6 || gamePadState.ThumbSticks.Left.X > 0.6 || gamePadState.ThumbSticks.Left.Y < 0.6 || gamePadState.ThumbSticks.Left.Y > 0.6)
                 {
-                    Console.WriteLine(look);
                     oldLook = look;
                 }
             }
             else
             {
-               Console.WriteLine("Working?");
                DecreaseAcceleration(timeDelta);
             }
         }
@@ -182,14 +179,13 @@ namespace Bio_Cell
 
             center = pos + new Vector2(sprite.Width / 2, sprite.Height / 2);            // Get the center vector of the player
 
-            
-                Console.WriteLine("1");
+            if (gamePadState.IsConnected.Equals(true))
+            {
                 gamePadState = GamePad.GetState(PlayerIndex.One);
                 MovementGamePad(gamePadState, gameTime, timeDelta);
-            if (!gamePadState.IsConnected.Equals(true))
-            
+            }
+            else if (!gamePadState.IsConnected.Equals(true))
             {
-                Console.WriteLine("100");
                 keyState = Keyboard.GetState();
                 MovementKeyboard(keyState, gameTime, timeDelta);                            // Determine what the player pressed
             }

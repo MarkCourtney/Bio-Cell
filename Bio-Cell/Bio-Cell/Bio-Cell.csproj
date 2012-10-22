@@ -111,6 +111,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Collectable.cs" />
+    <Compile Include="CollectableGlucose.cs" />
     <Compile Include="DeathMarker.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="EnemyVirus.cs" />
