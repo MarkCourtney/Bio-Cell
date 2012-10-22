@@ -45,7 +45,7 @@ namespace Bio_Cell
                         Zoom = 1;
                         keyPressed = true;
 
-                        if (stopWatch.Elapsed.Seconds >= 13)
+                        if (stopWatch.Elapsed.Seconds >= 7)
                         {
                             stopWatch.Reset();
                             keyPressed = false;

@@ -107,10 +107,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Collectable.cs" />
+    <Compile Include="DeathMarker.cs" />
     <Compile Include="Enemy.cs" />
+    <Compile Include="EnemyVirus.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayerCell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />

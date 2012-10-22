@@ -15,6 +15,7 @@ namespace Bio_Cell
     public class PlayerCell : Player    // PlayerCell extends Player class
     {
         DeathMarker deathMarker;
+        Vector2 oldLook;
 
         public override void LoadContent()
         {
@@ -29,13 +30,13 @@ namespace Bio_Cell
             health = 3;                                                 // Player has 3 lives
             Alive = true;                                               // Bool to determine whether the player is alive or dead
             random = new Random();                                      // Random class used in spawning to new location after death
-            //camera = new Camera(center);
         }
 
 
         public override void BoostSpeed()                           // Additional boost in speed for limited time
         {
-            if (keyState.IsKeyDown(Keys.Space))                     // When space is pressed, normal acceleration can reach 200
+            Console.WriteLine(normalAcceleration);
+            if (keyState.IsKeyDown(Keys.Space) || gamePadState.Buttons.RightShoulder == ButtonState.Pressed)                     // When space is pressed, normal acceleration can reach 200
             {
                 normalAcceleration += 1;                            // Continualy increase normalAcceleration by 1
 
@@ -44,7 +45,7 @@ namespace Bio_Cell
                     normalAcceleration = boostedMaxAcceleration;    //  Then normalAcceleration is equal to boostedMaxAcceleration
                 }
             }
-            else if (!keyState.IsKeyDown(Keys.Space))               // When space is NOT pressed, decrease normalAcceleration to normalMaxAcceleration
+            else if (!keyState.IsKeyDown(Keys.Space) || gamePadState.Buttons.RightShoulder != ButtonState.Pressed)               // When space is NOT pressed, decrease normalAcceleration to normalMaxAcceleration
             {
                 if (normalAcceleration > normalMaxAcceleration)     // Check if normalAcceleration is greater than normalMaxAcceleration
                 {
@@ -61,6 +62,7 @@ namespace Bio_Cell
         public override void DecreaseAcceleration(float timeDelta)          // Decrease the acceleration of the player to 0   
         {                                                                   // Slows the player till they stop - speed = 0    
             speed = 0;
+            Console.WriteLine(normalAcceleration);
 
             if (normalAcceleration > 0)     // If the normalAcceleration is greater than 0
             {
@@ -72,7 +74,7 @@ namespace Bio_Cell
                 normalAcceleration = 0;
             }
 
-            pos += look * (speed += normalAcceleration) * timeDelta;
+            pos += oldLook * (speed += normalAcceleration) * timeDelta;
         }
 
         public override void DecreaseHealth()   // Decrease the players health by 1
@@ -103,8 +105,11 @@ namespace Bio_Cell
         }
 
 
-        public override void MovementKeys(KeyboardState keyState, GameTime gameTime, float timeDelta)   // Used to determine the keystate and what should be performed
+        public override void MovementKeyboard(KeyboardState keyState, GameTime gameTime, float timeDelta)   // Used to determine the keystate and what should be performed
         {
+            look.X = (float)Math.Sin(rotation);                                         // Determine the look on the X axis using rotation
+            look.Y = (float)-Math.Cos(rotation);                                        // Determine the look on the Y axis using rotation
+            
             if (keyState.IsKeyDown(Keys.W))
             {
                 IncreaseAcceleration(timeDelta);    // Move the player forward in the direction they're facing
@@ -120,6 +125,31 @@ namespace Bio_Cell
             if (keyState.IsKeyDown(Keys.D))
             {
                 rotation += (5 * timeDelta);        // Rotate the player right
+            }
+        }
+
+
+        public override void MovementGamePad(GamePadState gamePadState, GameTime gameTime, float timeDelta)   // Used to determine the keystate and what should be performed
+        { 
+            look.X = gamePadState.ThumbSticks.Left.X;      // Determine the look on the X axis using Left ThumbStick
+            look.Y = -gamePadState.ThumbSticks.Left.Y;     // Determine the look on the Y axis using Right ThumbStick
+                                                           // Left Stick uses inverse of XNA Y axis. This is why the values are minus
+                                                        
+            
+            if (!gamePadState.ThumbSticks.Left.Equals(new Vector2(0, 0)))
+            {
+                IncreaseAcceleration(timeDelta);
+
+                if (gamePadState.ThumbSticks.Left.X < 0.6 || gamePadState.ThumbSticks.Left.X > 0.6 || gamePadState.ThumbSticks.Left.Y < 0.6 || gamePadState.ThumbSticks.Left.Y > 0.6)
+                {
+                    Console.WriteLine(look);
+                    oldLook = look;
+                }
+            }
+            else
+            {
+               Console.WriteLine("Working?");
+               DecreaseAcceleration(timeDelta);
             }
         }
 
@@ -140,7 +170,6 @@ namespace Bio_Cell
 
         public override void Update(GameTime gameTime)
         {
-
             if (Alive == false)         // Check if the player is dead
             {
                 DisplayDeathPoint();    // Will be used to display the death position of the player
@@ -151,13 +180,19 @@ namespace Bio_Cell
 
             float timeDelta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            keyState = Keyboard.GetState();
-
-
-            look.X = (float)Math.Sin(rotation);                                         // Determine the look on the X axis using rotation
-            look.Y = (float)-Math.Cos(rotation);                                        // Determine the look on the Y axis using rotation
             center = pos + new Vector2(sprite.Width / 2, sprite.Height / 2);            // Get the center vector of the player
-            MovementKeys(keyState, gameTime, timeDelta);                                // Determine what the player pressed
+
+            
+                Console.WriteLine("1");
+                gamePadState = GamePad.GetState(PlayerIndex.One);
+                MovementGamePad(gamePadState, gameTime, timeDelta);
+            if (!gamePadState.IsConnected.Equals(true))
+            
+            {
+                Console.WriteLine("100");
+                keyState = Keyboard.GetState();
+                MovementKeyboard(keyState, gameTime, timeDelta);                            // Determine what the player pressed
+            }
 
             sphere = new BoundingSphere(new Vector3(center.X, center.Y, 0), radius);    // BoundingSphere used for collisions
         }
