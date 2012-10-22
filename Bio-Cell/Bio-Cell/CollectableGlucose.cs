@@ -108,8 +108,6 @@ namespace Bio_Cell
             }
 
 
-
-
             if (keyState.IsKeyDown(Keys.J) && distance < 200)
             {
                 TrackPlayer();

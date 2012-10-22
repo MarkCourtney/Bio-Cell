@@ -19,7 +19,6 @@ namespace Bio_Cell
 
         public override void LoadContent()
         {
-            base.LoadContent();
 
             sprite = Game1.Instance.Content.Load<Texture2D>("Cell");    // Load the Cell image into the sprite
             pos = new Vector2(100, 100);                                // Set position of the player
@@ -30,6 +29,7 @@ namespace Bio_Cell
             health = 3;                                                 // Player has 3 lives
             Alive = true;                                               // Bool to determine whether the player is alive or dead
             random = new Random();                                      // Random class used in spawning to new location after death
+            base.LoadContent();
         }
 
 
